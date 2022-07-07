@@ -28,9 +28,23 @@
         };
 
         const drawDom = (data) => {
-            const dom = document.getElementById(data.id);
-            dom.style.left = `${data.x}%`;
-            dom.style.top = `${data.y}%`;
+            if (data.x > 100 || data.y > 100 || data.x < 0 || data.y < 0) {
+                const dom = document.getElementById(data.id);
+                if (dom) {
+                    boardDom.removeChild(dom);
+                }
+            } else {
+                var dom = document.getElementById(data.id);
+                if (!dom) {
+                    if (data.type === 'player') {
+                        dom = createPlayerDom(data);
+                    } else if (data.type === 'round') {
+                        dom = createRoundDom(data);
+                    }
+                }
+                dom.style.left = `${data.x}%`;
+                dom.style.top = `${data.y}%`;
+            }
         };
 
         const createDom = (data, className) => {
@@ -41,23 +55,26 @@
             return dom;
         };
 
-        const createRound = (data) => {
+        const createRoundDom = (data) => {
             const dom = createDom(data, 'round');
             dom.innerText = `💥`;
+            return dom;
         };
 
-        const createPlayer = (data) => {
+        const createPlayerDom = (data) => {
             const dom = createDom(data, 'player');
             dom.innerText = `🧍`;
+            return dom;
         };
 
         const gameData = {
-            rounds: [{id: 100, x: 50, y: 50, degrees: 210, distance: 3}],
-            players: [{id: 1, x: 50, y: 50, degrees: 90, distance: .5}]
-        };
+            rounds: [{ type: 'round', id: 100, x: 50, y: 50, degrees: 210, distance: 3 }],
+            players: [
+                { type: 'player', id: 1, x: 50, y: 50, degrees: 90, distance: .5 },
+                { type: 'player', id: 2, x: 70, y: 70, degrees: 110, distance: .5 }
 
-        gameData.rounds.forEach(r => createRound(r));
-        gameData.players.forEach(p => createPlayer(p));
+            ]
+        };
 
         const intervalId = setInterval(() => {
 
@@ -70,11 +87,27 @@
             [...gameData.rounds, ...gameData.players].forEach(a => drawDom(a));
         }, 100);
 
+        const shootIntervalId = setInterval(() => {
+            gameData.players.forEach(p => {
+                gameData.rounds.push({
+                    id: 100 + gameData.rounds.length,
+                    type: 'round',
+                    x: p.x,
+                    y: p.y,
+                    degrees: p.degrees,
+                    distance: 3
+                });
+            });
+         }, 1000);
+        
         document.addEventListener('keydown', (event) => {
             var newPos;
-            if(event.code === 'ArrowDown') {
-                newPos = {...playerPos, top: playerPos.top + moveIncrement}; 
-            }});
+            if(event.code === 'KeyA') {
+                gameData.players[0].degrees = gameData.players[0].degrees + 10; 
+            } else if(event.code === 'KeyL') {
+                gameData.players[1].degrees = gameData.players[1].degrees + 10; 
+            }
+        });
 
     })();
   </script>
