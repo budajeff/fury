@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Fury</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <style>
+    .round {
+        position: absolute;
+    }
+  </style>
+    <body>
+        <div id="board">
+    
+        </div>
+      </body>
+  <script>
+    (()=>{
+        const boardDom = document.getElementById('board');
+
+        const getCoordinatesFromVector = (vector) => {
+            return {
+                x: Math.cos(vector.degrees * (3.14/180)) * vector.distance,
+                y: Math.sin(vector.degrees * (3.14/180)) * vector.distance
+            };
+        };
+
+        const drawRound = (roundData) => {
+            const roundDom = document.getElementById(roundData.id);
+            roundDom.innerText = `💥 ${roundData.x}, ${roundData.y}`;
+            roundDom.style.left = `${roundData.x}%`;
+            roundDom.style.top = `${roundData.y}%`;
+        };
+
+        const createRound = (roundData) => {
+            const roundDom = document.createElement('div');
+            roundDom.id = roundData.id;
+            roundDom.classList.add('round');
+            boardDom.appendChild(roundDom);
+        };
+
+        var r1 = {id: 0, x: 50, y: 50, degrees: 210, distance: 1};
+        createRound(r1);
+
+        const intervalId = setInterval(() => {
+            
+            const updated = getCoordinatesFromVector(r1);
+            r1 = {...r1, x: r1.x + updated.x, y: r1.y + updated.y};
+
+            drawRound(r1);
+        }, 100);
+    })();
+  </script>
+</html>
