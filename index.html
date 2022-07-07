@@ -10,9 +10,11 @@
   <style>
     .round, .player {
         position: absolute;
+        font-size: x-large;
     }
     body {
         overflow: hidden;
+        background-color: teal;
     }
   </style>
     <body>
@@ -70,25 +72,39 @@
 
         const createPlayerDom = (data) => {
             const dom = createDom(data, 'player');
-            dom.innerText = `🧍`;
+            dom.innerText = `🚁`;
+            //dom.innerText = '🛩';
             return dom;
         };
 
         const gameData = {
-            rounds: [{ type: 'round', id: 100, x: 50, y: 50, degrees: 210, distance: 3 }],
+            rounds: [{ type: 'round', id: 100, x: 50, y: 50, degrees: 210, distance: 1 }],
             players: [
-                { type: 'player', id: 1, x: 50, y: 50, degrees: 90, distance: .5 },
-                { type: 'player', id: 2, x: 70, y: 70, degrees: 110, distance: .5 }
+                { type: 'player', id: 1, x: 20, y: 20, degrees: 90, distance: .5 },
+                { type: 'player', id: 2, x: 40, y: 40, degrees: 110, distance: .5 },
+                { type: 'player', id: 3, x: 60, y: 60, degrees: 90, distance: .5 },
+                { type: 'player', id: 4, x: 80, y: 80, degrees: 110, distance: .5 }
 
             ]
         };
 
         const intervalId = setInterval(() => {
 
-            [...gameData.rounds, ...gameData.players].forEach(a => {
+            [...gameData.rounds].forEach(a => {
                 const updated = getCoordinatesFromVector(a);
                 a.x = a.x + updated.x;
                 a.y = a.y + updated.y;
+            });
+
+            [...gameData.players].forEach(a => {
+                const updated = getCoordinatesFromVector(a);
+                if(a.x + updated.x > 2 && 
+                   a.x + updated.x < 98 && 
+                   a.y + updated.y > 2 && 
+                   a.y + updated.y < 98) {
+                    a.x = a.x + updated.x;
+                    a.y = a.y + updated.y;
+                }
             });
 
             //gameData.rounds = gameData.rounds.filter(r => r.x > 0 && r.x < 100 && r.y > 0 && r.y < 100);
@@ -97,6 +113,7 @@
                 gameData.players.every(p => {
                     if(Math.round(p.x) === Math.round(r.x) && Math.round(p.y) === Math.round(r.y)) {
                         p.died = true;
+                        p.distance = 0;
                     } 
                 });
             });
@@ -106,14 +123,16 @@
 
         const shootIntervalId = setInterval(() => {
             gameData.players.forEach(p => {
-                gameData.rounds.push({
+                if(!p.died) {
+                    gameData.rounds.push({
                     id: 100 + gameData.rounds.length,
                     type: 'round',
                     x: p.x,
                     y: p.y,
                     degrees: p.degrees,
-                    distance: 3
+                    distance: 1
                 });
+                }
             });
          }, 1000);
         
@@ -124,10 +143,14 @@
                     player.degrees = player.degrees + 10; 
                 } 
             };
-            if(event.code === 'KeyA') {
+            if(event.code === 'KeyQ') {
                 updatePlayer(0);
-            } else if(event.code === 'KeyL') {
+            } else if(event.code === 'KeyC') {
                 updatePlayer(1);
+            } else if(event.code === 'KeyB') {
+                updatePlayer(2);
+            } else if(event.code === 'KeyP') {
+                updatePlayer(3);
             }
         });
 
