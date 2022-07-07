@@ -7,7 +7,7 @@
     <title>🚁</title>
   </head>
   <style>
-    .round, .player {
+    .round, .player, .ground {
         position: absolute;
         font-size: x-large;
     }
@@ -48,6 +48,8 @@
                         dom = createPlayerDom(data);
                     } else if (data.type === 'round') {
                         dom = createRoundDom(data);
+                    } else if(data.type === 'ground') {
+                        dom = createGroundDom(data);
                     }
                 }
                 dom.style.left = `${data.x}%`;
@@ -80,6 +82,12 @@
             return dom;
         };
 
+        const createGroundDom = (data) => {
+            const dom = createDom(data, 'ground');
+            dom.innerText = `⛰🗼🏭🏥🌋🏙️🏭🏬🏪⛰`;
+            return dom;
+        };
+
         const getDistance = (x1, y1, x2, y2) => {
             let y = x2 - x1;
             let x = y2 - y1;
@@ -92,8 +100,10 @@
                 { type: 'player', id: 'QW', x: 10, y: 30, degrees: 0, distance: .3 },
                 { type: 'player', id: 'ZX', x: 50, y: 60, degrees: 90, distance: .3 },
                 { type: 'player', id: 'NM', x: 80, y: 40, degrees: 180, distance: .3 },
-                { type: 'player', id: 'OP', x: 90, y: 90, degrees: 270, distance: .3 }
-
+                { type: 'player', id: 'OP', x: 90, y: 90, degrees: 270, distance: .3 },
+                { type: 'ground', id: '00', x: 20, y: 95, degrees: 260, distance: 0},
+                { type: 'ground', id: '01', x: 40, y: 95, degrees: 280, distance: 0},
+                { type: 'ground', id: '02', x: 60, y: 95, degrees: 300, distance: 0},
             ]
         };
 
@@ -116,7 +126,6 @@
                 }
             });
 
-            //gameData.rounds = gameData.rounds.filter(r => r.x > 0 && r.x < 100 && r.y > 0 && r.y < 100);
             gameData.players.forEach(p => {
                 gameData.rounds.forEach(r => {
                     if(r.source === p.id) {
@@ -174,7 +183,6 @@
                 updatePlayer(3, -10);
             }
         });
-
     })();
   </script>
 </html>
