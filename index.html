@@ -77,13 +77,19 @@
             return dom;
         };
 
+        const getDistance = (x1, y1, x2, y2) => {
+            let y = x2 - x1;
+            let x = y2 - y1;
+            return Math.sqrt(x * x + y * y);
+        }
+
         const gameData = {
-            rounds: [{ type: 'round', id: 100, x: 50, y: 50, degrees: 210, distance: 1 }],
+            rounds: [],
             players: [
-                { type: 'player', id: 1, x: 20, y: 20, degrees: 90, distance: .5 },
-                { type: 'player', id: 2, x: 40, y: 40, degrees: 110, distance: .5 },
-                { type: 'player', id: 3, x: 60, y: 60, degrees: 90, distance: .5 },
-                { type: 'player', id: 4, x: 80, y: 80, degrees: 110, distance: .5 }
+                { type: 'player', id: 1, x: 20, y: 20, degrees: 0, distance: .1 },
+                { type: 'player', id: 2, x: 40, y: 40, degrees: 90, distance: .1 },
+                { type: 'player', id: 3, x: 60, y: 60, degrees: 180, distance: .1 },
+                { type: 'player', id: 4, x: 80, y: 80, degrees: 270, distance: .1 }
 
             ]
         };
@@ -108,10 +114,13 @@
             });
 
             //gameData.rounds = gameData.rounds.filter(r => r.x > 0 && r.x < 100 && r.y > 0 && r.y < 100);
-
-            gameData.rounds.forEach(r => {
-                gameData.players.every(p => {
-                    if(Math.round(p.x) === Math.round(r.x) && Math.round(p.y) === Math.round(r.y)) {
+            gameData.players.forEach(p => {
+                gameData.rounds.forEach(r => {
+                    if(r.source === p.id) {
+                        return;// dont die from your own rounds
+                    }
+                    const distance = getDistance(r.x, r.y, p.x, p.y);
+                    if(distance <= 3) {
                         p.died = true;
                         p.distance = 0;
                     } 
@@ -126,6 +135,7 @@
                 if(!p.died) {
                     gameData.rounds.push({
                     id: 100 + gameData.rounds.length,
+                    source: p.id,
                     type: 'round',
                     x: p.x,
                     y: p.y,
