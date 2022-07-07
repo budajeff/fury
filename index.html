@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Fury</title>
+    <title>🚁</title>
     <link rel="stylesheet" href="style.css">
   </head>
   <style>
@@ -72,7 +72,7 @@
 
         const createPlayerDom = (data) => {
             const dom = createDom(data, 'player');
-            dom.innerText = `🚁`;
+            dom.innerText = `🚁${data.id}`;
             //dom.innerText = '🛩';
             return dom;
         };
@@ -86,10 +86,10 @@
         const gameData = {
             rounds: [],
             players: [
-                { type: 'player', id: 1, x: 20, y: 20, degrees: 0, distance: .1 },
-                { type: 'player', id: 2, x: 40, y: 40, degrees: 90, distance: .1 },
-                { type: 'player', id: 3, x: 60, y: 60, degrees: 180, distance: .1 },
-                { type: 'player', id: 4, x: 80, y: 80, degrees: 270, distance: .1 }
+                { type: 'player', id: 1, x: 20, y: 20, degrees: 0, distance: .3 },
+                { type: 'player', id: 2, x: 40, y: 40, degrees: 90, distance: .3 },
+                { type: 'player', id: 3, x: 60, y: 60, degrees: 180, distance: .3 },
+                { type: 'player', id: 4, x: 80, y: 80, degrees: 270, distance: .3 }
 
             ]
         };
@@ -120,7 +120,7 @@
                         return;// dont die from your own rounds
                     }
                     const distance = getDistance(r.x, r.y, p.x, p.y);
-                    if(distance <= 3) {
+                    if(distance <= 2) {
                         p.died = true;
                         p.distance = 0;
                     } 
@@ -140,7 +140,7 @@
                     x: p.x,
                     y: p.y,
                     degrees: p.degrees,
-                    distance: 1
+                    distance: 1.75
                 });
                 }
             });
