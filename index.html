@@ -11,6 +11,9 @@
     .round, .player {
         position: absolute;
     }
+    body {
+        overflow: hidden;
+    }
   </style>
     <body>
         <div id="board">
@@ -44,6 +47,10 @@
                 }
                 dom.style.left = `${data.x}%`;
                 dom.style.top = `${data.y}%`;
+
+                if(data.died) {
+                    dom.innerText = '💀';
+                }
             }
         };
 
@@ -84,6 +91,16 @@
                 a.y = a.y + updated.y;
             });
 
+            //gameData.rounds = gameData.rounds.filter(r => r.x > 0 && r.x < 100 && r.y > 0 && r.y < 100);
+
+            gameData.rounds.forEach(r => {
+                gameData.players.every(p => {
+                    if(Math.round(p.x) === Math.round(r.x) && Math.round(p.y) === Math.round(r.y)) {
+                        p.died = true;
+                    } 
+                });
+            });
+            
             [...gameData.rounds, ...gameData.players].forEach(a => drawDom(a));
         }, 100);
 
@@ -100,12 +117,17 @@
             });
          }, 1000);
         
-        document.addEventListener('keydown', (event) => {
-            var newPos;
+        document.addEventListener('keypress', (event) => {
+            const updatePlayer = (playerId) => {
+                const player = gameData.players[playerId];
+                if(!player.died) {
+                    player.degrees = player.degrees + 10; 
+                } 
+            };
             if(event.code === 'KeyA') {
-                gameData.players[0].degrees = gameData.players[0].degrees + 10; 
+                updatePlayer(0);
             } else if(event.code === 'KeyL') {
-                gameData.players[1].degrees = gameData.players[1].degrees + 10; 
+                updatePlayer(1);
             }
         });
 
