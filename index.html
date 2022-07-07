@@ -8,13 +8,12 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <style>
-    .round {
+    .round, .player {
         position: absolute;
     }
   </style>
     <body>
         <div id="board">
-    
         </div>
       </body>
   <script>
@@ -28,30 +27,55 @@
             };
         };
 
-        const drawRound = (roundData) => {
-            const roundDom = document.getElementById(roundData.id);
-            roundDom.innerText = `💥 ${roundData.x}, ${roundData.y}`;
-            roundDom.style.left = `${roundData.x}%`;
-            roundDom.style.top = `${roundData.y}%`;
+        const drawDom = (data) => {
+            const dom = document.getElementById(data.id);
+            dom.style.left = `${data.x}%`;
+            dom.style.top = `${data.y}%`;
         };
 
-        const createRound = (roundData) => {
-            const roundDom = document.createElement('div');
-            roundDom.id = roundData.id;
-            roundDom.classList.add('round');
-            boardDom.appendChild(roundDom);
+        const createDom = (data, className) => {
+            const dom = document.createElement('div');
+            dom.id = data.id;
+            dom.classList.add(className);
+            boardDom.appendChild(dom);
+            return dom;
         };
 
-        var r1 = {id: 0, x: 50, y: 50, degrees: 210, distance: 1};
-        createRound(r1);
+        const createRound = (data) => {
+            const dom = createDom(data, 'round');
+            dom.innerText = `💥`;
+        };
+
+        const createPlayer = (data) => {
+            const dom = createDom(data, 'player');
+            dom.innerText = `🧍`;
+        };
+
+        const gameData = {
+            rounds: [{id: 100, x: 50, y: 50, degrees: 210, distance: 3}],
+            players: [{id: 1, x: 50, y: 50, degrees: 90, distance: .5}]
+        };
+
+        gameData.rounds.forEach(r => createRound(r));
+        gameData.players.forEach(p => createPlayer(p));
 
         const intervalId = setInterval(() => {
-            
-            const updated = getCoordinatesFromVector(r1);
-            r1 = {...r1, x: r1.x + updated.x, y: r1.y + updated.y};
 
-            drawRound(r1);
+            [...gameData.rounds, ...gameData.players].forEach(a => {
+                const updated = getCoordinatesFromVector(a);
+                a.x = a.x + updated.x;
+                a.y = a.y + updated.y;
+            });
+
+            [...gameData.rounds, ...gameData.players].forEach(a => drawDom(a));
         }, 100);
+
+        document.addEventListener('keydown', (event) => {
+            var newPos;
+            if(event.code === 'ArrowDown') {
+                newPos = {...playerPos, top: playerPos.top + moveIncrement}; 
+            }});
+
     })();
   </script>
 </html>
